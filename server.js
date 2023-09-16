@@ -1,15 +1,18 @@
+//Basic config of libraries
 const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
 app.use(express.json());
 
+//User storage
 const users = [];
 
 app.get("/users", (req, res) => {
     res.json(users);
 });
 
-app.post("/users", async (req, res) => {
+//create new user {name: ###, password: ###}
+app.post("/users", async (req, res) => { //bcrypt uses async await
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const user = { name: req.body.name, password: hashedPassword };
@@ -20,8 +23,12 @@ app.post("/users", async (req, res) => {
     }
 });
 
+//Login sistem
 app.post("/users/login", async (req, res) => {
-    const user = users.find((user) => user.name === req.body.name);
+
+    //Check if user exists, search by its name
+    const user = users.find((user) => user.name === req.body.name);     
+
     if (user === undefined) {
         res.status(404).send("Cannot find user");
     } else {
