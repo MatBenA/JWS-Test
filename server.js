@@ -24,15 +24,16 @@ app.post("/users/login", async (req, res) => {
     const user = users.find((user) => user.name === req.body.name);
     if (user === undefined) {
         res.status(404).send("Cannot find user");
-    }
-    try {
-        if (await bcrypt.compare(req.body.password, user.password)) {
-            res.send("Loged in");
-        } else {
-            res.status(500).send("Not Allowed");
+    } else {
+        try {
+            if (await bcrypt.compare(req.body.password, user.password)) {
+                res.send("Loged in");
+            } else {
+                res.status(500).send("Not Allowed");
+            }
+        } catch {
+            res.status(500).send("Error");
         }
-    } catch {
-        res.status(500).send("Error");
     }
 });
 
